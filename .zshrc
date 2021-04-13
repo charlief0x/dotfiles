@@ -83,6 +83,7 @@ plugins=(
         git
         ssh-agent
         terraform
+        ubuntu
 	)
 
 # OMZ plugin customizations
