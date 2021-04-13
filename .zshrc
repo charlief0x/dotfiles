@@ -81,6 +81,7 @@ plugins=(
         aws
         docker
         git
+        python
         ssh-agent
         terraform
         ubuntu
