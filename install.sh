@@ -14,6 +14,7 @@ if command -v gh >/dev/null 2>&1; then
   gh auth setup-git
 fi
 
+git submodule sync --recursive
 git submodule update --init --recursive nvim/.config/nvim zsh/.config/zsh/plugins tmux/.config/tmux/plugins ghostty/.config/ghostty/themes ssh
 
 PACKAGES=(
