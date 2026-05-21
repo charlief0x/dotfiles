@@ -82,9 +82,6 @@ cask "font-fira-mono-nerd-font"
 # Terminal
 cask "ghostty"
 
-# Editors
-cask "zed"
-
 # Browsers
 cask "firefox"
 cask "google-chrome"
