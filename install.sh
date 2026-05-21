@@ -157,6 +157,10 @@ for pkg in "${PACKAGES[@]}"; do
   fi
 done
 
+# Create local override stubs if they don't exist
+[[ -f "$HOME/.gitconfig.local" ]] || touch "$HOME/.gitconfig.local"
+[[ -f "$HOME/.config/curlrc.local" ]] || touch "$HOME/.config/curlrc.local"
+
 if [[ -d "ssh" ]]; then
   mkdir -p "$HOME/.ssh"
   mkdir -p "$HOME/.ssh/control"
