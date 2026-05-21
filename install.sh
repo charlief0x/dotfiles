@@ -20,24 +20,40 @@ PACKAGES=(
 
 usage() {
   cat <<'EOF'
-Usage: ./install.sh [--dry-run] [--adopt]
+Usage: ./install.sh [--dry-run] [--adopt [<path>...]]
 
 Options:
-  --dry-run   Show what stow would do without making changes.
-  --adopt     Adopt existing files into the stow tree before linking.
+  --dry-run          Show what stow would do without making changes.
+  --adopt [<path>…]  Adopt existing files before linking. Paths are files or
+                     directories under ~ or ~/.config (e.g. ~/.config/ghostty,
+                     ~/.zshrc). If no paths are given, all packages are adopted.
+
+Examples:
+  ./install.sh
+  ./install.sh --dry-run
+  ./install.sh --adopt ~/.config/ghostty ~/.zshrc
+  ./install.sh --adopt
 EOF
 }
 
-STOW_FLAGS=()
+DRY_RUN=0
+ADOPT=0
+ADOPT_PATHS=()
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
   --dry-run)
-    STOW_FLAGS+=("--simulate" "--verbose=2")
+    DRY_RUN=1
     shift
     ;;
   --adopt)
-    STOW_FLAGS+=("--adopt")
+    ADOPT=1
     shift
+    # Collect any following non-flag arguments as paths
+    while [[ $# -gt 0 && "$1" != --* ]]; do
+      ADOPT_PATHS+=("$1")
+      shift
+    done
     ;;
   -h | --help)
     usage
@@ -51,12 +67,65 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ $DRY_RUN -eq 1 && $ADOPT -eq 1 ]]; then
+  echo "Error: --dry-run and --adopt are mutually exclusive." >&2
+  exit 1
+fi
+
+# Reverse-map a ~ path to the stow package that owns it.
+# Strips $HOME/ prefix, then finds which package dir contains that relative path.
+find_package_for_path() {
+  local target_path="$1"
+  # Normalise to absolute path
+  target_path="$(cd "$(dirname "$target_path")" && pwd)/$(basename "$target_path")"
+  local rel="${target_path#"$HOME/"}"
+  for pkg in "${PACKAGES[@]}" ssh homebrew; do
+    if [[ -e "${DOTFILES_DIR}/${pkg}/${rel}" ]]; then
+      echo "$pkg"
+      return 0
+    fi
+  done
+  echo "Error: no package found for '${target_path}'" >&2
+  return 1
+}
+
+# Build set of packages to adopt (empty = all)
+ADOPT_PACKAGES=()
+if [[ $ADOPT -eq 1 && ${#ADOPT_PATHS[@]} -gt 0 ]]; then
+  for path in "${ADOPT_PATHS[@]}"; do
+    pkg="$(find_package_for_path "$path")"
+    # Avoid duplicates
+    for existing in "${ADOPT_PACKAGES[@]+"${ADOPT_PACKAGES[@]}"}"; do
+      [[ "$existing" == "$pkg" ]] && continue 2
+    done
+    ADOPT_PACKAGES+=("$pkg")
+  done
+fi
+
 run_stow() {
-  local target_args=("$@")
-  if [[ ${#STOW_FLAGS[@]} -gt 0 ]]; then
-    stow "${STOW_FLAGS[@]}" "${target_args[@]}"
+  local extra_flags=()
+  local pkg="${@: -1}"  # last argument is the package
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    extra_flags+=("--simulate" "--verbose=2")
+  elif [[ $ADOPT -eq 1 ]]; then
+    # Adopt if no specific paths given, or if this package is in the adopt list
+    if [[ ${#ADOPT_PACKAGES[@]} -eq 0 ]]; then
+      extra_flags+=("--adopt")
+    else
+      for adopt_pkg in "${ADOPT_PACKAGES[@]}"; do
+        if [[ "$adopt_pkg" == "$pkg" ]]; then
+          extra_flags+=("--adopt")
+          break
+        fi
+      done
+    fi
+  fi
+
+  if [[ ${#extra_flags[@]} -gt 0 ]]; then
+    stow "${extra_flags[@]}" "$@"
   else
-    stow "${target_args[@]}"
+    stow "$@"
   fi
 }
 
@@ -76,7 +145,7 @@ fi
 # Brew bundle — stow the common Brewfile then run bundle for common + host-specific
 if [[ -d "homebrew" ]]; then
   run_stow homebrew
-  if [[ ${#STOW_FLAGS[@]} -eq 0 ]] && command -v brew >/dev/null 2>&1; then
+  if [[ $DRY_RUN -eq 0 ]] && command -v brew >/dev/null 2>&1; then
     echo "Running brew bundle (common)..."
     brew bundle --global
     HOST_NAME="$(hostname -s 2>/dev/null || hostname)"
