@@ -6,12 +6,20 @@ cd "$DOTFILES_DIR"
 
 # Authenticate gh CLI and configure it as the git credential helper before
 # cloning submodules, so HTTPS remotes work on fresh machines without SSH keys.
+# We write the credential helper to .gitconfig.local (not via gh auth setup-git,
+# which hardcodes the absolute path to gh and pollutes the tracked .gitconfig).
 if command -v gh >/dev/null 2>&1; then
   if ! gh auth status >/dev/null 2>&1; then
     echo "GitHub CLI is not authenticated. Running gh auth login..."
     gh auth login
   fi
-  gh auth setup-git
+  GITCONFIG_LOCAL="$HOME/.gitconfig.local"
+  if ! grep -qs "gh auth git-credential" "$GITCONFIG_LOCAL" 2>/dev/null; then
+    git config --file "$GITCONFIG_LOCAL" --add "credential.https://github.com.helper" ""
+    git config --file "$GITCONFIG_LOCAL" --add "credential.https://github.com.helper" "!gh auth git-credential"
+    git config --file "$GITCONFIG_LOCAL" --add "credential.https://gist.github.com.helper" ""
+    git config --file "$GITCONFIG_LOCAL" --add "credential.https://gist.github.com.helper" "!gh auth git-credential"
+  fi
 fi
 
 git submodule sync --recursive
