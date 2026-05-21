@@ -26,40 +26,25 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 ./install.sh --adopt    # pull existing ~/.config files into repo before linking
 ```
 
-`install.sh` also initializes all git submodules before stowing.
+`install.sh` initializes all git submodules before stowing and handles GitHub
+authentication via the `gh` CLI.
 
 ## Bootstrap
 
-On a fresh machine the `ssh` submodule is a private repo cloned via the
-`github-personal` SSH alias. Because that alias is defined inside the `ssh`
-submodule itself, you need to set it up manually first:
+On a fresh machine:
 
-1. **Install 1Password** and enable the SSH agent  
-   → Settings → Developer → Use the SSH agent  
-   → Enable your personal GitHub SSH key
+1. **Install `gh`** (GitHub CLI) — via brew or your package manager.
 
-2. **Set `SSH_AUTH_SOCK`** in your shell (add to `~/.zshenv` or `~/.zprofile`):
-   ```sh
-   export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-   ```
-
-3. **Add the `github-personal` SSH alias** to `~/.ssh/config`:
-   ```sshconfig
-   Host github-personal
-       HostName github.com
-       User git
-       IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-       IdentitiesOnly yes
-       IdentityFile ~/.ssh/<your-personal-key>.pub
-       ControlMaster no
-   ```
-
-4. **Clone the dotfiles repo and run install:**
+2. **Clone the dotfiles repo:**
    ```bash
-   git clone git@github-personal:charlief0x/dotfiles.git ~/code/personal/dotfiles
-   cd ~/code/personal/dotfiles
+   git clone https://github.com/charlief0x/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
+   ```
+
+3. **Run install** — it will prompt for `gh auth login` before cloning submodules:
+   ```bash
    ./install.sh
    ```
 
-The full SSH config (including all host aliases) will be symlinked into `~/.ssh/`
-by `install.sh` after the submodule is cloned.
+All submodules use HTTPS remotes; `gh auth setup-git` configures the gh
+credential helper so no SSH key is required.
