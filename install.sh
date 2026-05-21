@@ -17,6 +17,17 @@ fi
 git submodule sync --recursive
 git submodule update --init --recursive nvim/.config/nvim zsh/.config/zsh/plugins tmux/.config/tmux/plugins ghostty/.config/ghostty/themes ssh
 
+# Ensure stow is available
+if ! command -v stow >/dev/null 2>&1; then
+  if command -v apt-get >/dev/null 2>&1; then
+    echo "Installing stow via apt..."
+    sudo apt-get install -y stow
+  else
+    echo "Error: stow is not installed. Please install it and re-run." >&2
+    exit 1
+  fi
+fi
+
 PACKAGES=(
   "1Password"
   "claude"
