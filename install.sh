@@ -4,6 +4,16 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DOTFILES_DIR"
 
+# Authenticate gh CLI and configure it as the git credential helper before
+# cloning submodules, so HTTPS remotes work on fresh machines without SSH keys.
+if command -v gh >/dev/null 2>&1; then
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "GitHub CLI is not authenticated. Running gh auth login..."
+    gh auth login
+  fi
+  gh auth setup-git
+fi
+
 git submodule update --init --recursive nvim/.config/nvim zsh/.config/zsh/plugins tmux/.config/tmux/plugins ghostty/.config/ghostty/themes ssh
 
 PACKAGES=(
@@ -155,13 +165,4 @@ if [[ -d "homebrew" ]]; then
       brew bundle --file="$HOST_BREWFILE"
     fi
   fi
-fi
-
-# GitHub CLI auth — used as the git credential helper instead of SSH
-if [[ $DRY_RUN -eq 0 ]] && command -v gh >/dev/null 2>&1; then
-  if ! gh auth status >/dev/null 2>&1; then
-    echo "GitHub CLI is not authenticated. Running gh auth login..."
-    gh auth login
-  fi
-  gh auth setup-git
 fi

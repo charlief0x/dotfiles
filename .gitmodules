@@ -1,6 +1,6 @@
 [submodule "nvim/.config/nvim"]
 	path = nvim/.config/nvim
-	url = git@github-personal:charlief0x/nvim.git
+	url = https://github.com/charlief0x/nvim.git
 [submodule "zsh/plugins/zsh-autosuggestions"]
 	path = zsh/.config/zsh/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
@@ -47,4 +47,4 @@
 	ignore = dirty
 [submodule "ssh"]
 	path = ssh
-	url = git@github-personal:charlief0x/dotfiles-ssh.git
+	url = https://github.com/charlief0x/dotfiles-ssh.git
