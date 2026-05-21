@@ -156,3 +156,11 @@ if [[ -d "homebrew" ]]; then
     fi
   fi
 fi
+
+# GitHub CLI auth
+if [[ $DRY_RUN -eq 0 ]] && command -v gh >/dev/null 2>&1; then
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "GitHub CLI is not authenticated. Running gh auth login..."
+    gh auth login
+  fi
+fi
