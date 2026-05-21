@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ./install.sh --adopt    # pull existing ~/.config files into repo before linking
 ```
 
-`install.sh` runs `git submodule update --init --recursive`, stows all packages, then runs `brew bundle --global` (common) and `brew bundle --file=homebrew/hosts/${HOST_NAME}/Brewfile` (host-specific) if brew is available.
+`install.sh` runs `gh auth login` + `gh auth setup-git` first (if `gh` is available and not already authenticated), then `git submodule update --init --recursive`, stows all packages, then runs `brew bundle --global` (common) and `brew bundle --file=homebrew/hosts/${HOST_NAME}/Brewfile` (host-specific) if brew is available. All submodules use HTTPS remotes; no SSH key is required.
 
 The `ssh` package is stowed to `~/.ssh`; all other packages stow to `~`.
 
