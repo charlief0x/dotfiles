@@ -83,7 +83,6 @@ cask "font-fira-mono-nerd-font"
 cask "ghostty"
 
 # Editors
-cask "neovide"
 cask "zed"
 
 # Browsers
