@@ -49,10 +49,12 @@ On a fresh machine:
 All submodules use HTTPS remotes; `gh auth setup-git` configures the gh
 credential helper so no SSH key is required.
 
-After running `install.sh`, create `~/.gitconfig.local` with your identity:
+After running `install.sh`, populate `~/.gitconfig.local` with your identity (the file is created automatically as an empty stub):
 
 ```ini
 [user]
     name = Your Name
     email = you@example.com
 ```
+
+`~/.config/curlrc.local` is also created as an empty stub for per-machine curl overrides.
