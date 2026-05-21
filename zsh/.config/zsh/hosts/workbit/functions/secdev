@@ -1,0 +1,3 @@
+secdev() {
+    export AWS_PROFILE=secdev
+}

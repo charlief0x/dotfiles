@@ -1,0 +1,6 @@
+
+# Turn off menu icons
+# https://512pixels.net/2026/03/hide-macos-tahoes-menu-icons-with-this-one-simple-trick/
+defaults write -g NSMenuEnableActionImages -bool NO
+
+

@@ -1,0 +1,4 @@
+# Strip square brackets — useful for cleaning up tmux/AWS output
+nosq() {
+    echo "$1" | tr -d '[]'
+}

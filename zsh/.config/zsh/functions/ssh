@@ -1,0 +1,12 @@
+ssh() {
+    # Rename the tmux window for the duration of the SSH session, then restore auto-rename
+    if [[ -n "$TMUX" && -n "$1" ]]; then
+        tmux rename-window "ssh:$1"
+    fi
+    command ssh "$@"
+    local exit_code=$?
+    if [[ -n "$TMUX" ]]; then
+        tmux set-window-option automatic-rename on >/dev/null 2>&1
+    fi
+    return "$exit_code"
+}

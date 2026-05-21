@@ -1,0 +1,47 @@
+# Taps
+tap "anomalyco/tap"
+tap "fetch-rewards/tap"
+
+# Fetch Rewards internal tooling
+brew "fetch-rewards/tap/fsd"
+brew "anomalyco/tap/opencode"
+
+# AWS / cloud access
+brew "common-fate/granted/granted"
+brew "cloudflare/cloudflare/cf-terraforming"
+
+# Data
+cask "snowflake-snowsql"
+
+# Security / compliance
+cask "osquery"
+cask "wireshark-app"
+
+# Storage
+cask "google-drive"
+
+# Browsers / remote
+cask "microsoft-edge"
+cask "windows-app"
+
+# Dev tools
+cask "codex-app"
+cask "postman"
+cask "visual-studio-code"
+cask "vscodium"
+
+# VS Code extensions
+vscode "anthropic.claude-code"
+vscode "dracula-theme-pro.theme-dracula-pro"
+vscode "github.copilot-chat"
+vscode "github.vscode-pull-request-github"
+vscode "golang.go"
+vscode "hashicorp.terraform"
+vscode "ms-azuretools.vscode-containers"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "ms-vscode-remote.remote-containers"
+vscode "ms-vscode-remote.remote-ssh"
+vscode "ms-vscode-remote.remote-ssh-edit"
+vscode "ms-vscode.remote-explorer"
