@@ -9,7 +9,7 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 | `1Password` | `~` | |
 | `claude`    | `~` | |
 | `curlrc`    | `~` | |
-| `git`       | `~` | global gitconfig + gitignore |
+| `git`       | `~` | global gitconfig + gitignore; identity in untracked `~/.gitconfig.local` |
 | `ghostty`   | `~` | themes via [dracula-pro-ghostty](https://github.com/charlief0x/dracula-pro-ghostty) submodule |
 | `homebrew`  | `~` | `~/.Brewfile` for `brew bundle --global`; host Brewfiles in `homebrew/hosts/` |
 | `nvim`      | `~` | config via [charlief0x/nvim](https://github.com/charlief0x/nvim) submodule |
@@ -48,3 +48,11 @@ On a fresh machine:
 
 All submodules use HTTPS remotes; `gh auth setup-git` configures the gh
 credential helper so no SSH key is required.
+
+After running `install.sh`, create `~/.gitconfig.local` with your identity:
+
+```ini
+[user]
+    name = Your Name
+    email = you@example.com
+```

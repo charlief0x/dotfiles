@@ -1,11 +1,10 @@
-[user]
-	name = Matthew Cerha
-	email = m.cerha@fetchrewards.com
+[include]
+	path = ~/.gitconfig.local
 [credential "https://github.com"]
 	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	helper =
+	helper = !gh auth git-credential
 [url "ssh://git@bitbucket.org/"]
 	insteadOf = https://bitbucket.org/
