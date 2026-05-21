@@ -14,7 +14,8 @@ _load_functions() {
     local dir="$1"
     [[ -d "$dir" ]] || return
     fpath=("$dir" $fpath)
-    autoload -Uz "$dir"/*(N:t)
+    local -a funcs=("$dir"/*(N:t))
+    (( ${#funcs} )) && autoload -Uz "${funcs[@]}"
 }
 _load_functions "${ZSH_CONFIG_DIR}/functions"
 _load_functions "${ZSH_CONFIG_DIR}/os/${OS_TYPE}/functions"
