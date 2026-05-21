@@ -4,36 +4,47 @@
 [submodule "zsh/plugins/zsh-autosuggestions"]
 	path = zsh/.config/zsh/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
+	ignore = dirty
 [submodule "zsh/plugins/zsh-history-substring-search"]
 	path = zsh/.config/zsh/plugins/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search
+	ignore = dirty
 [submodule "zsh/plugins/fast-syntax-highlighting"]
 	path = zsh/.config/zsh/plugins/fast-syntax-highlighting
 	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
+	ignore = dirty
 [submodule "zsh/plugins/fzf"]
 	path = zsh/.config/zsh/plugins/fzf
 	url = https://github.com/junegunn/fzf
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tpm"]
 	path = tmux/.config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tmux-sensible"]
 	path = tmux/.config/tmux/plugins/tmux-sensible
 	url = https://github.com/tmux-plugins/tmux-sensible
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tmux-yank"]
 	path = tmux/.config/tmux/plugins/tmux-yank
 	url = https://github.com/tmux-plugins/tmux-yank
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/vim-tmux-navigator"]
 	path = tmux/.config/tmux/plugins/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/dracula-pro-tmux"]
 	path = tmux/.config/tmux/plugins/dracula-pro-tmux
 	url = https://github.com/charlief0x/dracula-pro-tmux
+	ignore = dirty
 [submodule "zsh/.config/zsh/plugins/fzf-tab"]
 	path = zsh/.config/zsh/plugins/fzf-tab
 	url = https://github.com/Aloxaf/fzf-tab
+	ignore = dirty
 [submodule "ghostty/.config/ghostty/themes"]
 	path = ghostty/.config/ghostty/themes
 	url = https://github.com/charlief0x/dracula-pro-ghostty
+	ignore = dirty
 [submodule "ssh"]
 	path = ssh
 	url = git@github-personal:charlief0x/dotfiles-ssh.git
