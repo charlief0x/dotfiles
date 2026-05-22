@@ -23,7 +23,7 @@ if command -v gh >/dev/null 2>&1; then
 fi
 
 git submodule sync --recursive
-git submodule update --init --recursive nvim/.config/nvim zsh/.config/zsh/plugins tmux/.config/tmux/plugins ghostty/.config/ghostty/themes ssh
+git submodule update --init --recursive nvim/.config/nvim zsh/.config/zsh/plugins tmux/.config/tmux/plugins ghostty/.config/ghostty/themes
 
 # Ensure stow is available
 if ! command -v stow >/dev/null 2>&1; then
@@ -47,18 +47,28 @@ PACKAGES=(
   "zsh"
 )
 
+SSH_REPOS=(
+  "personal:https://github.com/charlief0x/dotfiles-ssh.git"
+  "work:https://github.com/charlief0x/dotfiles-ssh-work.git"
+)
+
+ENV_FILE="$HOME/.dotfiles-env"
+
 usage() {
   cat <<'EOF'
-Usage: ./install.sh [--dry-run] [--adopt [<path>...]]
+Usage: ./install.sh [--env personal|work] [--dry-run] [--adopt [<path>...]]
 
 Options:
+  --env <env>        Set environment (personal or work). Saved to ~/.dotfiles-env
+                     for future runs. Required on first run.
   --dry-run          Show what stow would do without making changes.
   --adopt [<path>…]  Adopt existing files before linking. Paths are files or
                      directories under ~ or ~/.config (e.g. ~/.config/ghostty,
                      ~/.zshrc). If no paths are given, all packages are adopted.
 
 Examples:
-  ./install.sh
+  ./install.sh --env personal
+  ./install.sh --env work
   ./install.sh --dry-run
   ./install.sh --adopt ~/.config/ghostty ~/.zshrc
   ./install.sh --adopt
@@ -68,9 +78,14 @@ EOF
 DRY_RUN=0
 ADOPT=0
 ADOPT_PATHS=()
+ENV=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+  --env)
+    ENV="$2"
+    shift 2
+    ;;
   --dry-run)
     DRY_RUN=1
     shift
@@ -101,6 +116,22 @@ if [[ $DRY_RUN -eq 1 && $ADOPT -eq 1 ]]; then
   exit 1
 fi
 
+# Resolve environment: flag > saved file
+if [[ -n "$ENV" ]]; then
+  if [[ "$ENV" != "personal" && "$ENV" != "work" ]]; then
+    echo "Error: --env must be 'personal' or 'work'." >&2
+    exit 1
+  fi
+  echo "$ENV" > "$ENV_FILE"
+elif [[ -f "$ENV_FILE" ]]; then
+  ENV="$(cat "$ENV_FILE")"
+else
+  echo "Error: no environment set. Run with --env personal or --env work." >&2
+  exit 1
+fi
+
+echo "Environment: $ENV"
+
 # Reverse-map a ~ path to the stow package that owns it.
 # Strips $HOME/ prefix, then finds which package dir contains that relative path.
 find_package_for_path() {
@@ -108,7 +139,7 @@ find_package_for_path() {
   # Normalise to absolute path
   target_path="$(cd "$(dirname "$target_path")" && pwd)/$(basename "$target_path")"
   local rel="${target_path#"$HOME/"}"
-  for pkg in "${PACKAGES[@]}" ssh homebrew; do
+  for pkg in "${PACKAGES[@]}" homebrew; do
     if [[ -e "${DOTFILES_DIR}/${pkg}/${rel}" ]]; then
       echo "$pkg"
       return 0
@@ -167,11 +198,32 @@ done
 # Create local override stub if it doesn't exist
 [[ -f "$HOME/.gitconfig.local" ]] || touch "$HOME/.gitconfig.local"
 
-if [[ -d "ssh" ]]; then
-  mkdir -p "$HOME/.ssh"
-  mkdir -p "$HOME/.ssh/control"
-  chmod 700 "$HOME/.ssh"
-  run_stow --target="$HOME/.ssh" ssh
+# Clone the environment-specific SSH repo directly into ~/.ssh
+if [[ $DRY_RUN -eq 0 ]]; then
+  SSH_REPO_URL=""
+  for entry in "${SSH_REPOS[@]}"; do
+    if [[ "${entry%%:*}" == "$ENV" ]]; then
+      SSH_REPO_URL="${entry#*:}"
+      break
+    fi
+  done
+
+  if [[ -n "$SSH_REPO_URL" ]]; then
+    mkdir -p "$HOME/.ssh/control"
+    chmod 700 "$HOME/.ssh"
+    if [[ -d "$HOME/.ssh/.git" ]]; then
+      echo "Updating SSH config repo..."
+      git -C "$HOME/.ssh" pull --ff-only
+    else
+      echo "Cloning SSH config repo ($ENV)..."
+      # Clone into a temp dir then move contents to avoid overwriting existing ~/.ssh files
+      TMP_SSH="$(mktemp -d)"
+      git clone "$SSH_REPO_URL" "$TMP_SSH"
+      # Move repo files (including .git) into ~/.ssh, skip existing files
+      cp -rn "$TMP_SSH/." "$HOME/.ssh/"
+      rm -rf "$TMP_SSH"
+    fi
+  fi
 fi
 
 # Brew bundle — stow the common Brewfile then run bundle for common + host-specific

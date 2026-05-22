@@ -45,7 +45,3 @@
 	path = ghostty/.config/ghostty/themes
 	url = https://github.com/charlief0x/dracula-pro-ghostty
 	ignore = dirty
-[submodule "ssh"]
-	path = ssh
-	url = https://github.com/charlief0x/dotfiles-ssh.git
-	ignore = untracked
