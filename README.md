@@ -9,7 +9,6 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 | `1Password` | `~` | |
 | `claude`    | `~` | |
 | `curlrc`    | `~` | |
-| `git`       | `~` | global gitconfig + gitignore; identity in untracked `~/.gitconfig.local` |
 | `ghostty`   | `~` | themes via [dracula-pro-ghostty](https://github.com/charlief0x/dracula-pro-ghostty) submodule |
 | `homebrew`  | `~` | `~/.Brewfile` for `brew bundle --global`; host Brewfiles in `homebrew/hosts/` (not stowed — used directly by `install.sh`) |
 | `nvim`      | `~` | config via [charlief0x/nvim](https://github.com/charlief0x/nvim) submodule |

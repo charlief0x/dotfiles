@@ -1,4 +1,0 @@
-[include]
-	path = ~/.gitconfig.local
-[url "ssh://git@bitbucket.org/"]
-	insteadOf = https://bitbucket.org/
