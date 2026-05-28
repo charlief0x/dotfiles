@@ -8,7 +8,7 @@
 palette = "dracula_pro"
 
 format = "$directory$git_branch$git_status$python${custom.userhost}$sudo$character"
-right_format = "$cmd_duration$status$aws$time"
+right_format = "$cmd_duration$status${custom.gh}$aws$time"
 add_newline = false
 
 [aws]
@@ -53,6 +53,13 @@ disabled = true
 
 [hostname]
 disabled = true
+
+[custom.gh]
+command = "awk '/user:/{print $2; exit}' ~/.config/gh/hosts.yml 2>/dev/null"
+when = "command -v gh &>/dev/null && git rev-parse --is-inside-work-tree 2>/dev/null"
+symbol = " "
+format = "[$symbol$output]($style) "
+style = "bold white"
 
 [custom.userhost]
 command = "echo ${USER}@$(hostname -s)"
