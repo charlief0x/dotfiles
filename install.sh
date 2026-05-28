@@ -166,6 +166,14 @@ run_stow() {
   local extra_flags=()
   local pkg="${@: -1}"  # last argument is the package
 
+  local no_fold_pkgs=("1Password")
+  for nf_pkg in "${no_fold_pkgs[@]}"; do
+    if [[ "$pkg" == "$nf_pkg" ]]; then
+      extra_flags+=("--no-folding")
+      break
+    fi
+  done
+
   if [[ $DRY_RUN -eq 1 ]]; then
     extra_flags+=("--simulate" "--verbose=2")
   elif [[ $ADOPT -eq 1 ]]; then
