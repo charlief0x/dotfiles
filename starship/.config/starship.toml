@@ -44,7 +44,7 @@ renamed = "»${count}"
 deleted = "✘${count}"
 
 [python]
-symbol = " "
+symbol = " "
 format = "[$symbol(${version})( \\($virtualenv\\))]($style) "
 style = "bold pink"
 
