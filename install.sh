@@ -270,6 +270,11 @@ if [[ -n "$SSH_REPO_URL" ]]; then
   else
     _clone_ssh() {
       local ssh_url; ssh_url="$(_ssh_url "$SSH_REPO_URL")"
+      # Ensure github.com host key is in known_hosts so SSH doesn't prompt
+      local kh="$HOME/.ssh/known_hosts"
+      if ! ssh-keygen -F github.com -f "$kh" >/dev/null 2>&1; then
+        ssh-keyscan -H github.com >> "$kh" 2>/dev/null
+      fi
       local tmp
       for url in "$ssh_url" "$SSH_REPO_URL"; do
         tmp="$(mktemp -d)"
