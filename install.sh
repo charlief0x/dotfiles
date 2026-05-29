@@ -260,14 +260,28 @@ if [[ -n "$SSH_REPO_URL" ]]; then
   mkdir -p "$HOME/.ssh/control"
   chmod 700 "$HOME/.ssh"
   [[ -L "$HOME/.ssh/.git" ]] && rm -f "$HOME/.ssh/.git"
+  # Derive SSH URL as a fallback (git@github.com:org/repo.git)
+  _ssh_url() {
+    echo "$1" | sed 's|https://github.com/|git@github.com:|'
+  }
   if [[ -d "$HOME/.ssh/.git" ]]; then
-    run "SSH config" git -C "$HOME/.ssh" pull --ff-only
+    _pull_ssh() { GIT_TERMINAL_PROMPT=0 git -C "$HOME/.ssh" pull --ff-only; }
+    run "SSH config" _pull_ssh
   else
     _clone_ssh() {
-      local tmp; tmp="$(mktemp -d)"
-      git clone "$SSH_REPO_URL" "$tmp"
-      cp -rn "$tmp/." "$HOME/.ssh/"
-      rm -rf "$tmp"
+      local ssh_url; ssh_url="$(_ssh_url "$SSH_REPO_URL")"
+      local tmp
+      for url in "$ssh_url" "$SSH_REPO_URL"; do
+        tmp="$(mktemp -d)"
+        if GIT_TERMINAL_PROMPT=0 git clone "$url" "$tmp"; then
+          cp -rn "$tmp/." "$HOME/.ssh/"
+          rm -rf "$tmp"
+          return 0
+        fi
+        rm -rf "$tmp"
+      done
+      echo "Could not clone — ensure 'gh auth login' or a GitHub SSH key is configured" >&2
+      return 1
     }
     run "SSH config ($ENV)" _clone_ssh
   fi
