@@ -146,12 +146,11 @@ if command -v gh >/dev/null 2>&1; then
     warn "GitHub CLI not authenticated — launching gh auth login"
     gh auth login
   fi
-  GITCONFIG_LOCAL="$HOME/.gitconfig.local"
-  if ! grep -qs "gh auth git-credential" "$GITCONFIG_LOCAL" 2>/dev/null; then
-    git config --file "$GITCONFIG_LOCAL" --add "credential.https://github.com.helper" ""
-    git config --file "$GITCONFIG_LOCAL" --add "credential.https://github.com.helper" "!gh auth git-credential"
-    git config --file "$GITCONFIG_LOCAL" --add "credential.https://gist.github.com.helper" ""
-    git config --file "$GITCONFIG_LOCAL" --add "credential.https://gist.github.com.helper" "!gh auth git-credential"
+  if ! git config --global --get-all credential.https://github.com.helper | grep -qs "gh auth git-credential"; then
+    git config --global --add "credential.https://github.com.helper" ""
+    git config --global --add "credential.https://github.com.helper" "!gh auth git-credential"
+    git config --global --add "credential.https://gist.github.com.helper" ""
+    git config --global --add "credential.https://gist.github.com.helper" "!gh auth git-credential"
   fi
 fi
 
