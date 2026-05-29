@@ -67,8 +67,8 @@ if git -c core.useBuiltinFSMonitor=false rev-parse --git-dir > /dev/null 2>&1; t
     staging=""
     
     # Count changes
-    working_count=$(git -c core.useBuiltinFSMonitor=false status --porcelain 2>/dev/null | grep -c "^.[^ ]" || echo 0)
-    staging_count=$(git -c core.useBuiltinFSMonitor=false status --porcelain 2>/dev/null | grep -c "^[^ ]" || echo 0)
+    working_count=$(git -c core.useBuiltinFSMonitor=false status --porcelain 2>/dev/null | grep -c "^.[^ ]"; true)
+    staging_count=$(git -c core.useBuiltinFSMonitor=false status --porcelain 2>/dev/null | grep -c "^[^ ]"; true)
     
     if [ "$working_count" -gt 0 ]; then
         working="$(printf "${PINK}*${RESET}") ${working_count}"
