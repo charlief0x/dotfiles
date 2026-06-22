@@ -79,6 +79,7 @@ ${BOLD}Options:${RST}
   -n, --dry-run          Preview stow changes without applying
   -f, --force            Delete conflicting files/symlinks, then link
   -a, --adopt [path...]  Adopt existing files before linking
+      --upgrade-fonts    Re-download all fonts even if already installed
   -h, --help             Show this help
 
 ${BOLD}Examples:${RST}
@@ -91,7 +92,7 @@ EOF
 }
 
 # ── Option parsing ────────────────────────────────────────────────────────────
-DRY_RUN=0 ADOPT=0 FORCE=0 ENV=''
+DRY_RUN=0 ADOPT=0 FORCE=0 UPGRADE_FONTS=0 ENV=''
 ADOPT_PATHS=()
 
 while [[ $# -gt 0 ]]; do
@@ -108,6 +109,8 @@ while [[ $# -gt 0 ]]; do
       while [[ $# -gt 0 && "$1" != -* ]]; do
         ADOPT_PATHS+=("$1"); shift
       done ;;
+    --upgrade-fonts)
+      UPGRADE_FONTS=1; shift ;;
     -h|--help)
       usage; exit 0 ;;
     --)
@@ -122,6 +125,14 @@ done
 [[ $DRY_RUN -eq 1 && $ADOPT -eq 1 ]] && die "--dry-run and --adopt are mutually exclusive"
 [[ $FORCE   -eq 1 && $ADOPT -eq 1 ]] && die "--force and --adopt are mutually exclusive"
 [[ $FORCE   -eq 1 && $DRY_RUN -eq 1 ]] && die "--force and --dry-run are mutually exclusive"
+
+# ── --upgrade-fonts: run font manager only and exit ───────────────────────────
+if [[ $UPGRADE_FONTS -eq 1 ]]; then
+  FONT_SCRIPT="${DOTFILES_DIR}/fonts/fonts.sh"
+  [[ -x "$FONT_SCRIPT" ]] || die "fonts/fonts.sh not found or not executable"
+  "$FONT_SCRIPT" --upgrade
+  exit 0
+fi
 
 # ── Resolve environment ───────────────────────────────────────────────────────
 if [[ -n "$ENV" ]]; then
@@ -308,6 +319,17 @@ if [[ -d "homebrew" ]]; then
     if [[ -f "$HOST_BREWFILE" ]]; then
       run "brew bundle ($HOST_NAME)" brew bundle --file="$HOST_BREWFILE"
     fi
+  fi
+fi
+
+# ── Fonts ─────────────────────────────────────────────────────────────────────
+if [[ $DRY_RUN -eq 0 ]]; then
+  FONT_SCRIPT="${DOTFILES_DIR}/fonts/fonts.sh"
+  if [[ -x "$FONT_SCRIPT" ]]; then
+    printf "  ${BOLD}fonts${RST}\n"
+    # Forward --upgrade when the user passes it to install.sh in future; for
+    # now just call with no flags (skips already-installed versions).
+    "$FONT_SCRIPT"
   fi
 fi
 

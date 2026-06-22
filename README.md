@@ -9,6 +9,7 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 | `1Password` | `~` | |
 | `claude`    | `~` | |
 | `curlrc`    | `~` | |
+| `fonts`     | n/a | not stowed — managed by `fonts/fonts.sh`; installs Nerd Fonts to `~/Library/Fonts` (macOS) or `~/.fonts` (Linux) |
 | `ghostty`   | `~` | themes via [dracula-pro-ghostty](https://github.com/charlief0x/dracula-pro-ghostty) submodule |
 | `homebrew`  | `~` | `~/.Brewfile` for `brew bundle --global`; host Brewfiles in `homebrew/hosts/` (not stowed — used directly by `install.sh`) |
 | `nvim`      | `~` | config via [charlief0x/nvim](https://github.com/charlief0x/nvim) submodule |
@@ -20,9 +21,12 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 ## Usage
 
 ```bash
-./install.sh            # apply all symlinks
-./install.sh --dry-run  # preview without changes
-./install.sh --adopt    # pull existing ~/.config files into repo before linking
+./install.sh                   # apply all symlinks + install fonts (skips if up to date)
+./install.sh --dry-run         # preview without changes
+./install.sh --adopt           # pull existing ~/.config files into repo before linking
+./install.sh --upgrade-fonts   # re-download all Nerd Fonts (e.g. after a new release)
+fonts/fonts.sh                 # run font manager standalone
+fonts/fonts.sh --upgrade       # force re-download of all fonts
 ```
 
 `install.sh` initializes all git submodules before stowing and handles GitHub
