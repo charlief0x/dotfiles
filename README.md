@@ -82,10 +82,3 @@ export SOURCEGRAPH_ENDPOINT="https://fetch.sourcegraphcloud.com"
 ```
 
 The `2>/dev/null` suppresses errors on machines where a given entry doesn't exist — the variable is just empty on those hosts.
-
-**Tokens currently used:**
-
-| Service name (Keychain) | Consumed by |
-| ----------------------- | ----------- |
-| `GITHUB_PERSONAL_ACCESS_TOKEN` | Sourcegraph MCP (GitHub code search) |
-| `SOURCEGRAPH_ACCESS_TOKEN` | Sourcegraph MCP |
