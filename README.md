@@ -61,3 +61,31 @@ After running `install.sh`, populate `~/.gitconfig.local` with your identity (th
 ```
 
 `~/.config/curlrc.local` is also created as an empty stub for per-machine curl overrides.
+
+## Secrets (macOS Keychain)
+
+Tokens are stored in the macOS Keychain and injected at shell start via `~/.zshrc.local` (not tracked in this repo). This keeps plaintext secrets out of dotfiles entirely.
+
+**Store a secret:**
+
+```bash
+security add-generic-password -s <service-name> -a "$USER" -w
+# prompts for the password value
+```
+
+**`~/.zshrc.local` pattern:**
+
+```zsh
+export GITHUB_PERSONAL_ACCESS_TOKEN="$(security find-generic-password -s GITHUB_PERSONAL_ACCESS_TOKEN -a $USER -w 2>/dev/null)"
+export SOURCEGRAPH_ACCESS_TOKEN="$(security find-generic-password -s SOURCEGRAPH_ACCESS_TOKEN -a $USER -w 2>/dev/null)"
+export SOURCEGRAPH_ENDPOINT="https://fetch.sourcegraphcloud.com"
+```
+
+The `2>/dev/null` suppresses errors on machines where a given entry doesn't exist — the variable is just empty on those hosts.
+
+**Tokens currently used:**
+
+| Service name (Keychain) | Consumed by |
+| ----------------------- | ----------- |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | Sourcegraph MCP (GitHub code search) |
+| `SOURCEGRAPH_ACCESS_TOKEN` | Sourcegraph MCP |
