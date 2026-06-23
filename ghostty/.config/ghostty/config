@@ -7,8 +7,9 @@
 theme = dracula-pro
 
 # Font settings
-font-family = "FiraMono Nerd Font Mono"
-font-size = 12
+#font-family = "FiraMono Nerd Font Mono"
+font-family = "ZedMono Nerd Font Mono"
+font-size = 14
 adjust-cell-height = 6
 
 
