@@ -7,7 +7,7 @@
 
 palette = "dracula_pro"
 
-format = "$directory$git_branch$git_status$python${custom.userhost}$sudo$character"
+format = "$python$git_branch$git_status${custom.userhost}$directory$sudo$character"
 right_format = "$cmd_duration$status${custom.gh}$aws$time"
 add_newline = false
 
@@ -86,8 +86,6 @@ style = "yellow"
 [character]
 success_symbol = "[❱](bold green) "
 error_symbol = "[❱](bold red) "
-#success_symbol = "[→](bold green)  "
-#error_symbol = "[→](bold red)  "
 format = "$symbol"
 
 [time]
