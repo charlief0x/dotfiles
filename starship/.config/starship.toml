@@ -91,7 +91,7 @@ format = "$symbol"
 [time]
 disabled = false
 format = " [$time]($style)"
-time_format = "%H:%M %Y-%m-%d"
+time_format = "%H:%M:%S %Y-%m-%d"
 style = "comment"
 
 # ---------------------------------------------------------------------------
