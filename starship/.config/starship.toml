@@ -60,10 +60,11 @@ when = "command -v gh &>/dev/null && git rev-parse --is-inside-work-tree 2>/dev/
 symbol = " "
 format = "[$symbol$output]($style) "
 style = "bold white"
+ignore_timeout = true
 
 [custom.userhost]
 command = "echo ${USER}@$(hostname -s)"
-when = '{ [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; } || [ "$EUID" -eq 0 ]'
+when = '[ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]'
 format = "[$output]($style) "
 style = "bold green"
 
