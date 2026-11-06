@@ -69,7 +69,7 @@ format = "[$output]($style) "
 style = "bold green"
 
 [sudo]
-symbol = "💀"
+symbol = "🔥"
 disabled = false
 format = "[$symbol]($style)"
 style = "bold red"
